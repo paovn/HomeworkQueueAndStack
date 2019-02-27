@@ -14,60 +14,76 @@ import java.util.ArrayList;
 import java.util.Stack;
 
 public class BracketBalance {
-	
+
 	public static void main(String[] args) throws IOException {
 		
-		BufferedReader br = new BufferedReader(new FileReader(new File("inputBracketBalance.txt")));
-		BufferedWriter bw = new BufferedWriter(new FileWriter(new File("outputBreacketBalance.lol")));
-		String s ="";
+		File file = new File("outputBreacketBalance.txt");
+		FileWriter fileWriter = new FileWriter(file, true);
 		
+		StringBuilder stringBuilder = new StringBuilder();
+		
+		BufferedReader br = new BufferedReader(new FileReader(new File("inputBracketBalance.txt")));
+		BufferedWriter bw = new BufferedWriter(fileWriter);
+		
+		String s ="";
+		String salida = ""; 
 		while((s=br.readLine())!=null) {
 			Stack<Character> p = new Stack<>();
 			
-			char[] c = s.toCharArray();
+			boolean auxStop = true;
 			
-				for (int i = 0; i < c.length; i++) {
-					if (c[i] == '(') {
-						p.push(c[i]);
-					}else if(c[i]=='{') {
-						p.push(c[i]);
-					}else if(c[i]== '[') {
-						p.push(c[i]);
-					}else if(c[i]== ')') {
-						if(p.peek() == '(') {
-							p.pop();	
-						}else {
-							break;
-						}
-					}else if(c[i]=='}') {
-						if(p.peek()=='{') {
-							p.pop();
-						}else {
-							break;
-						}
-					}else if(c[i]==']') {
-						if(p.peek()=='[') {
-							p.pop();
-						}else {
-							break;
-						}
+			char[] c = s.toCharArray();
+
+			for (int i = 0; i < c.length && auxStop; i++) {
+				if (c[i] == '(') {
+					p.push(c[i]);
+				}else if(c[i]=='{') {
+					p.push(c[i]);
+				}else if(c[i]== '[') {
+					p.push(c[i]);
+				}else if((c[i]== ')'||c[i]=='}'||c[i]==']') && p.isEmpty()) {
+//					bw.write("false");
+					auxStop = false;	
+					//bw.flush();
+				}
+
+				else if(c[i]== ')') {
+					if(p.peek() == '(') {
+						p.pop();	
+					}else {
+						auxStop = false;
+					}
+				}else if(c[i]=='}') {
+					if(p.peek()=='{') {
+						p.pop();
+					}else {
+						auxStop = false;
+					}
+				}else if(c[i]==']') {
+					if(p.peek()=='[') {
+						p.pop();
+					}else {
+						auxStop = false;
 					}
 				}
-				
-				if(p.isEmpty()) {
-					bw.write("true");
-					bw.flush();
-				}else {
-					bw.write("false");
-					bw.flush();
-				}
-				
-			
+			}
+			if(p.isEmpty()) {
+				stringBuilder.append("True\n");
+//				System.out.println("Esta vacio");
+//				bw.write("True");
+				//bw.flush();
+			}else {
+				stringBuilder.append("False\n");
+//				System.out.println("NO Esta vacio");
+//				bw.write("False");
+				//bw.flush();
+			}
 		}
+		
+		bw.write(stringBuilder.toString());
 		br.close();
 		bw.close();
-		
-	
+
 	}
-	
+
 }
